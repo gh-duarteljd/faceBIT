@@ -5,10 +5,10 @@ dx_kernel()
 {
 	image dx;
 
-	float** DX = (float**)malloc(3 * sizeof(float*));
+	float** DX = malloc(3 * sizeof(float*));
 	for (int i = 0; i < 3; i++)
 	{
-		DX[i] = (float*) malloc(3 * sizeof(float));
+		DX[i] = malloc(3 * sizeof(float));
 	}
 
 	DX[0][0] =  0;
@@ -33,10 +33,10 @@ dy_kernel()
 {
 	image dy;
 
-	float** DY = (float**)malloc(3 * sizeof(float*));
+	float** DY = malloc(3 * sizeof(float*));
 	for (int i = 0; i < 3; i++)
 	{
-		DY[i] = (float*) malloc( 3 * sizeof(float));
+		DY[i] = malloc( 3 * sizeof(float));
 	}
 
 	DY[0][0] =  0;

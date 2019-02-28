@@ -11,7 +11,7 @@
 
 typedef struct
 {
-    double** matrix;
+    float** matrix;
     int l;
     int c;
 }
@@ -29,15 +29,6 @@ pca_matrix covariance_matrix(pca_matrix B);
 
 void eigenvectors_and_eigenvalues(pca_matrix C, gsl_vector *eval, gsl_matrix *evec);
 
-double* image_unidimensionalization(double** Xi, int height_of_face, int width_of_face);
-
-char
-pca_face_detector(image    input_image,
-             face     input_face,
-						 double** p,
-		    		 double** u,
-             int 	    WIDTH_OF_WINDOW,
-             int 	    HEIGHT_OF_WINDOW,
-             int      NUMBER_OF_FACES);
+float* matrix_planning(float** m, int height, int width);
 
 #endif /* PCA_H */

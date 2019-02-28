@@ -1,0 +1,2 @@
+faceDET:
+	gcc -O3 faceDET.c ../../../VISION/interface/interface.c ../../../VISION/processing/gradients.c ../../../VISION/processing/free.c ../../../VISION/processing/convolution.c ../../../VISION/filters/diferencial.c ../../../VISION/features/hog/hog.c ../../../VISION/tools/face_classifier.c ../../../VISION/tools/pyramid.c ../../../VISION/tools/down_scale.c ../../../VISION/tools/draw_rect.c ../../../VISION/tools/draw_circle.c ../../../VISION/tools/non_maximum_suppression.c ../../../VISION/tools/histogram_equalizer.c -o faceDET -lm

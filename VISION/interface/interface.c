@@ -34,10 +34,10 @@ load_image(char* file_path)
 
 	fscanf(imgptr, "%i %i\n%i\n", &buffer.width, &buffer.height, &max_pixel_intensity);
 
-	buffer.pixels_map = (float**)malloc(buffer.height * sizeof(float*));
+	buffer.pixels_map = malloc(buffer.height * sizeof(float*));
 	for (int i = 0; i < buffer.height; i++)
 	{
-    buffer.pixels_map[i] = (float*)malloc(buffer.width * sizeof(float));
+    buffer.pixels_map[i] = malloc(buffer.width * sizeof(float));
 		for (int j = 0; j < buffer.width; j++)
     {
       unsigned char  pixel;

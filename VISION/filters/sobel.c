@@ -5,10 +5,10 @@ sobel_x_kernel()
 {
 	image sobel_x;
 
-	float** Sx = (float**)malloc(3 * sizeof(float*));
+	float** Sx = malloc(3 * sizeof(float*));
 	for (int i = 0; i < 3; i++)
 	{
-		Sx[i] = (float*) malloc( 3 * sizeof(float));
+		Sx[i] = malloc( 3 * sizeof(float));
 	}
 
 	Sx[0][0] =  1;
@@ -33,10 +33,10 @@ sobel_y_kernel()
 {
 	image sobel_y;
 
-	float** Sy = (float**)malloc(3 * sizeof(float*));
+	float** Sy = malloc(3 * sizeof(float*));
 	for (int i = 0; i < 3; i++)
 	{
-		Sy[i] = (float*) malloc( 3 * sizeof(float));
+		Sy[i] = malloc( 3 * sizeof(float));
 	}
 
 	Sy[0][0] =  1;

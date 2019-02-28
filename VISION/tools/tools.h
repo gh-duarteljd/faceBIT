@@ -4,7 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../features/features.h"
+#include "../features/hog/hog.h"
 #include "../interface/interface.h"
 
 #define FACE 	 	1
@@ -47,15 +47,17 @@ draw_circle(image input_image,
 						int		pixels_width,
 						int   color);
 
-char
-hog_face_classifier(image  input_image,
-		    						float* W,
-		    						float  B,
-		    						int 	 WIDTH_OF_WINDOW,
-		    						int 	 HEIGHT_OF_WINDOW,
-		    						int 	 PIXELS_PER_CELL,
-		    						int 	 CELLS_PER_BLOCK,
-		    						int 	 NUMBER_OF_ANGLE_BINS);
+face*
+face_detector(image  input_image,
+		    			float* W,
+		    			float  B,
+		    			int 	 WIDTH_OF_WINDOW,
+		    			int 	 HEIGHT_OF_WINDOW,
+		    			int 	 PIXELS_PER_CELL,
+		    			int 	 CELLS_PER_BLOCK,
+		    			int 	 STEP_WINDOW,
+		    			int 	 NUMBER_OF_ANGLE_BINS,
+		    			int* 	 number_of_faces);
 
 float
 svm_calculation_probability(hog_features features,

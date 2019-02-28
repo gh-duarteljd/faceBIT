@@ -1,12 +1,12 @@
-#ifndef _FEATURES_
-#define _FEATURES_
+#ifndef _HOG_
+#define _HOG_
 
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../processing/processing.h"
-#include "../interface/interface.h"
-#include "../filters/filters.h"
+#include "../../processing/processing.h"
+#include "../../interface/interface.h"
+#include "../../filters/filters.h"
 
 typedef struct
 {
@@ -27,4 +27,4 @@ histogram(float** cell_mag,
           int 		 cell_width_in_pixels,
           int 		 NUMBER_OF_ANGLE_BINS);
 
-#endif // _FEATURES_
+#endif // _HOG_

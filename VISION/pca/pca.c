@@ -7,20 +7,17 @@ pca_matrix empirical_mean(pca_matrix X)
   U.l = X.l;
   U.c = 1;
 
-  U.matrix = malloc(U.l * sizeof(double*));
+  U.matrix = malloc(U.l * sizeof(float*));
   for (int i = 0; i < U.l; i++)
   {
-    U.matrix[i] = calloc(U.c * sizeof(double), 1);
-  }
-
-  for(int i = 0; i < X.l; i++)
-  {
+    U.matrix[i] = calloc(U.c, sizeof(float));
     for(int j = 0; j < X.c; j++)
     {
        U.matrix[i][0] =  U.matrix[i][0] + X.matrix[i][j];
     }
-     U.matrix[i][0] =  U.matrix[i][0] / X.c;
+    U.matrix[i][0] =  U.matrix[i][0] / X.c;
   }
+
   return U;
 }
 
@@ -31,19 +28,16 @@ pca_matrix mean_deviations(pca_matrix X, pca_matrix U)
   B.l = X.l;
   B.c = X.c;
 
-  B.matrix = (double**)malloc(B.l * sizeof(double*));
+  B.matrix = malloc(B.l * sizeof(float*));
   for (int i = 0; i < B.l; i++)
   {
-    B.matrix[i] = (double*)malloc(B.c * sizeof(double));
-  }
-
-  for (int i = 0; i < B.l; i++)
-  {
+    B.matrix[i] = malloc(B.c * sizeof(float));
     for (int j = 0; j < B.c; j++)
     {
       B.matrix[i][j] = X.matrix[i][j] - U.matrix[i][0];
     }
   }
+
   return B;
 }
 
@@ -54,24 +48,19 @@ pca_matrix matrix_multiplication(pca_matrix A, pca_matrix B)
   C.l = A.l;
   C.c = B.c;
 
-  C.matrix = (double**)malloc(A.l * sizeof(double*));
-  for (int i = 0; i < A.l; i++)
-  {
-    C.matrix[i] = (double*)malloc(B.c * sizeof(double));
-  }
-
+  C.matrix = malloc(C.l * sizeof(float*));
   for (int i = 0; i < C.l; i++)
   {
+    C.matrix[i] = calloc(C.c, sizeof(float));
     for (int j = 0; j < C.c; j++)
     {
-      double sum = 0;
       for(int k = 0; k < A.c; k++)
       {
-         sum = sum + (B.matrix[k][j] * A.matrix[i][k]);
+         C.matrix[i][j] = C.matrix[i][j] + (B.matrix[k][j] * A.matrix[i][k]);
       }
-      C.matrix[i][j] = sum;
     }
   }
+
   return C;
 }
 
@@ -81,18 +70,16 @@ pca_matrix transposed_matrix(pca_matrix A)
   B.l = A.c;
   B.c = A.l;
 
-  B.matrix = (double**)malloc(B.l * sizeof(double*));
+  B.matrix = malloc(B.l * sizeof(float*));
   for (int i = 0; i < B.l; i++)
   {
-    B.matrix[i] = (double*)malloc(B.c * sizeof(double));
-  }
-  for (int i = 0; i < B.l; i++)
-  {
+    B.matrix[i] = malloc(B.c * sizeof(float));
     for (int j = 0; j < B.c; j++)
     {
       B.matrix[i][j] = A.matrix[j][i];
     }
   }
+
   return B;
 }
 
@@ -128,16 +115,16 @@ void eigenvectors_and_eigenvalues(pca_matrix C, gsl_vector *eval, gsl_matrix *ev
   return;
 }
 
-double* image_unidimensionalization(double** Xi, int height_of_face, int width_of_face)
-{
-  double* xi = malloc(width_of_face * height_of_face * sizeof(double));
 
-  for (int i = 0, k = 0; i < height_of_face; i++)
+{
+  float* v = malloc(width * height * sizeof(float));
+
+  for (int i = 0, k = 0; i < height; i++)
   {
-    for (int j = 0; j < width_of_face; j++, k++)
+    for (int j = 0; j < width; j++, k++)
     {
-      xi[k] = Xi[i][j];
+      v[k] = m[i][j];
     }
   }
-  return xi;
+  return v;
 }

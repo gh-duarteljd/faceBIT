@@ -5,10 +5,10 @@ g_kernel()
 {
 	image g;
 
-	float** G = (float**)malloc(5 * sizeof(float*));
+	float** G = malloc(5 * sizeof(float*));
 	for (int i = 0; i < 5; i++)
 	{
-		G[i] = (float*) malloc(5 * sizeof(float));
+		G[i] = malloc(5 * sizeof(float));
 	}
 
 	G[0][0] =  0.0125786;

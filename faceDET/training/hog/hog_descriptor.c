@@ -1,4 +1,4 @@
-#include "../../VISION/VISION.h"
+#include "../../../VISION/VISION.h"
 
 // HOG parameters.
 #define PIXELS_PER_CELL 	 		8
@@ -66,12 +66,12 @@ float** database_hog_features_decriptor()
 
 		if (i < NUMBER_OF_FACES)
 		{
-			char folder[] = "../../databases/faces/train";
+			char folder[] = "../../../databases/faces/train";
 			sprintf(path, "%s/%d.pgm", folder, i + 1);
 		}
 		else
 		{
-			char folder[] = "../../databases/nofaces";
+			char folder[] = "../../../databases/nofaces";
 			sprintf(path, "%s/%d.pgm", folder, (i - NUMBER_OF_FACES + 1));
 		}
 

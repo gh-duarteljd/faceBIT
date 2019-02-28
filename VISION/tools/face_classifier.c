@@ -1,41 +1,5 @@
 #include "tools.h"
 
-char
-hog_face_classifier(image  input_image,
-		    						float* W,
-		    						float  B,
-		    						int 	 WIDTH_OF_WINDOW,
-		    						int 	 HEIGHT_OF_WINDOW,
-		    						int 	 PIXELS_PER_CELL,
-		    						int 	 CELLS_PER_BLOCK,
-		    						int 	 NUMBER_OF_ANGLE_BINS)
-{
-
-	int NUMBER_OF_FEATURES = ((HEIGHT_OF_WINDOW / PIXELS_PER_CELL) - (CELLS_PER_BLOCK -1)) * ((WIDTH_OF_WINDOW /  PIXELS_PER_CELL) - (CELLS_PER_BLOCK -1)) * CELLS_PER_BLOCK * CELLS_PER_BLOCK * NUMBER_OF_ANGLE_BINS;
-
-	hog_features features = hog(input_image, PIXELS_PER_CELL, CELLS_PER_BLOCK, NUMBER_OF_ANGLE_BINS);
-
-	float L = 0;
-	for (int i = 0; i < NUMBER_OF_FEATURES; i++)
-	{
-		L = L + W[i] * features.hog_vector[i];
-	}
-	L = L + B;
-
-	if (L > 0)
-	{
-		return FACE;
-	}
-	else
-	{
-		return NOFACE;
-	}
-}
-
-/*
-
-
-
 face*
 face_detector(image  input_image,
 		    			float* W,
@@ -53,10 +17,10 @@ face_detector(image  input_image,
 	image image_buffer;
 	image_buffer.width = WIDTH_OF_WINDOW;
 	image_buffer.height = HEIGHT_OF_WINDOW;
-	image_buffer.pixels_map = (double**)malloc(HEIGHT_OF_WINDOW * sizeof(double*));
+	image_buffer.pixels_map = (float**)malloc(HEIGHT_OF_WINDOW * sizeof(float*));
 	for (int i = 0; i < HEIGHT_OF_WINDOW; i++)
 	{
-		image_buffer.pixels_map[i] = (double*) malloc( WIDTH_OF_WINDOW * sizeof(double));
+		image_buffer.pixels_map[i] = (float*) malloc( WIDTH_OF_WINDOW * sizeof(float));
 	}
 
 	int window_number = 0;
@@ -79,7 +43,7 @@ face_detector(image  input_image,
 
 			hog_features hog_buffer = hog(image_buffer, PIXELS_PER_CELL, CELLS_PER_BLOCK, NUMBER_OF_ANGLE_BINS);
 
-			double prob = svm_calculation_probability(hog_buffer, W, B, NUMBER_OF_FEATURES);
+			float prob = svm_calculation_probability(hog_buffer, W, B, NUMBER_OF_FEATURES);
 
 			if (prob > 80)
 			{
@@ -104,7 +68,7 @@ face_detector(image  input_image,
 	return face_buffer;
 }
 
-double
+float
 svm_calculation_probability(hog_features hog_buffer,
 														float* 			 W,
 														float 			 B,
@@ -118,4 +82,3 @@ svm_calculation_probability(hog_features hog_buffer,
 	F = 100 / (1 + exp(-10 *(F + B)));
 	return F;
 }
-*/

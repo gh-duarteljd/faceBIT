@@ -1,4 +1,4 @@
-#include "features.h"
+#include "hog.h"
 
 hog_features hog(image input_image,
 								int 	 cell_width_in_pixels,

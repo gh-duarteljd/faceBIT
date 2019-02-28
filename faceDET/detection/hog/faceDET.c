@@ -1,4 +1,4 @@
-#include "../../VISION/VISION.h"
+#include "../../../VISION/VISION.h"
 
 #define WIDTH_OF_WINDOW  168
 
@@ -14,10 +14,6 @@
 
 #define STEP_SCALE 1.3
 
-#define NUMBER_OF_FACES 2019
-
-#define NUMBER_OF_COMPONENTS 100
-
 int main(int argc, char** argv)
 {
   // ensure proper usage
@@ -27,46 +23,8 @@ int main(int argc, char** argv)
 			exit(1);
 	}
 
-	FILE* imgptr_P = fopen("../../VISION/pca/P", "r");
-	if (imgptr_P == NULL)
-	{
-		exit(1);
-	}
-
-	FILE* imgptr_U = fopen("../../VISION/pca/U", "r");
-	if (imgptr_U == NULL)
-	{
-		exit(1);
-	}
-
-	double** p;
-	int l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
-	int c = NUMBER_OF_FACES;
-	p = malloc(l * sizeof(double*));
-	for (int i = 0; i < l; i++)
-	{
-		p[i] = malloc(c * sizeof(double));
-		for (int j = 0; j < c; j++)
-		{
-			fread(&p[i][j], sizeof(double), 1, imgptr_P);
-		}
-	}
-
-	double** u;
-	l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
-	c = 1;
-	u = malloc(l * sizeof(double*));
-	for (int i = 0; i < l; i++)
-	{
-		u[i] = malloc(c * sizeof(double));
-		for (int j = 0; j < c; j++)
-		{
-			fread(&u[i][j], sizeof(double), 1, imgptr_U);
-		}
-	}
-
 	float B;
-	FILE* ptrB = fopen("../training/SVM/B", "r");
+	FILE* ptrB = fopen("../../training/hog/SVM/B", "r");
 	if (ptrB == NULL)
    	{
 		fprintf(stderr, "Unable to open training data.\n");
@@ -74,7 +32,7 @@ int main(int argc, char** argv)
    	}
 	fread(&B, sizeof(float), 1, ptrB);
 
-	FILE* ptrW = fopen("../training/SVM/W", "r");
+	FILE* ptrW = fopen("../../training/hog/SVM/W", "r");
 	if (ptrW == NULL)
    	{
 		fprintf(stderr, "Unable to open training data.\n");
@@ -109,26 +67,6 @@ int main(int argc, char** argv)
 														 step_window[i],
 														 NUMBER_OF_ANGLE_BINS,
 														 &number_of_faces[i]);
-
-		for(int  j = 0; j < number_of_faces[i]; j++)
-		{
-
-			char confirm = pca_face_detector(input_pyramid.layer[i],
-			             										 faces[i][j],
-									 									 	 p,
-					    		 										 u,
-			             										 WIDTH_OF_WINDOW,
-			             										 HEIGHT_OF_WINDOW,
-			             										 NUMBER_OF_COMPONENTS);
-			if(confirm == 1)
-			{
-				faces[i][j].p = 0;
-				faces[i][j].x = 0;
-				faces[i][j].y = 0;
-				faces[i][j].w = 0;
-				faces[i][j].h = 0;
-			}
-		}
 
 		for(int  j = 0; j < number_of_faces[i]; j++)
 		{
