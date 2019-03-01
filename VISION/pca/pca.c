@@ -115,7 +115,7 @@ void eigenvectors_and_eigenvalues(pca_matrix C, gsl_vector *eval, gsl_matrix *ev
   return;
 }
 
-
+float* matrix_planning(float** m, int height, int width)
 {
   float* v = malloc(width * height * sizeof(float));
 

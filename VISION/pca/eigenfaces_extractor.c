@@ -1,28 +1,27 @@
-#include "../VISION/VISION.h"
+#include "../VISION.h"
 #include "pca.h"
 
 #define WIDTH_OF_WINDOW        168
 #define HEIGHT_OF_WINDOW       192
-#define NUMBER_OF_FACES        2019
+#define NUMBER_OF_FACES        500
 
 int main()
 {
-  pca_matrix Xt;
-  Xt.l = NUMBER_OF_FACES;
-  Xt.c = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
-  Xt.matrix = malloc(Xt.l * sizeof(double*));
+  pca_matrix I;
+  I.l = NUMBER_OF_FACES;
+  I.c = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
+  I.matrix = malloc(I.l * sizeof(float*));
 
   for (int i = 0; i < NUMBER_OF_FACES; i++)
   {
-    char path[30];
-    char folder[] = "../databases/Yale";
-    sprintf(path, "%s/%d.pgm", folder, i + 1);
+    char path[100];
+    sprintf(path, "../../databases/faces/train/%d.pgm", i + 1);
     image current_image = load_image(path);
-    Xt.matrix[i] = image_unidimensionalization(current_image.pixels_map, HEIGHT_OF_WINDOW, WIDTH_OF_WINDOW);
+    I.matrix[i] = matrix_planning(current_image.pixels_map, HEIGHT_OF_WINDOW, WIDTH_OF_WINDOW);
     free_image(current_image);
   }
 
-  pca_matrix X = transposed_matrix(Xt);
+  pca_matrix X = transposed_matrix(I);
 
   pca_matrix U = empirical_mean(X);
 
@@ -65,12 +64,12 @@ int main()
      }
    }
 
-  FILE* outptr_P = fopen("P", "w");
+  FILE* outptr_P = fopen("eigen/P", "w");
   if (outptr_P == NULL)
   {
     exit(1);
   }
-  FILE* outptr_U = fopen("U", "w");
+  FILE* outptr_U = fopen("eigen/U", "w");
   if (outptr_U == NULL)
   {
     exit(1);
