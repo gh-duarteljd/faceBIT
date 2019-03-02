@@ -5,7 +5,8 @@
 #include "processing/processing.h"
 #include "interface/interface.h"
 #include "features/hog/hog.h"
+#include "features/pca/pca.h"
 #include "tools/tools.h"
-//#include "pca/pca.h"
+#include "pca/pca.h"
 
 #endif // _VISION_

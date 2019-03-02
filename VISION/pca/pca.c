@@ -128,3 +128,12 @@ float* matrix_planning(float** m, int height, int width)
   }
   return v;
 }
+
+void pca_matrix_free(pca_matrix M)
+{
+  for (int i = 0; i < M.l; i++)
+  {
+    free(M.matrix[i]);
+  }
+  free(M.matrix);
+}

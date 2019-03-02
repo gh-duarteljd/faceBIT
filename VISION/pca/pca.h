@@ -31,4 +31,6 @@ void eigenvectors_and_eigenvalues(pca_matrix C, gsl_vector *eval, gsl_matrix *ev
 
 float* matrix_planning(float** m, int height, int width);
 
+void pca_matrix_free(pca_matrix M);
+
 #endif /* PCA_H */

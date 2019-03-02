@@ -79,6 +79,7 @@ int main(int argc, char** argv)
 		free_image(input_pyramid.layer[i]);
 	}
 
+	printf("erro\n");
 	int total_faces = 0;
 
 	for (int i = 0; i < input_pyramid.pyramid_height; i++)
@@ -102,6 +103,7 @@ int main(int argc, char** argv)
 	int final_number_faces = 0;
 	face* face_buffer = non_maximum_suppression(face_vector, total_faces, &final_number_faces);
   printf("final_number_faces: %d, total_faces: %d\n", final_number_faces, total_faces);
+
 
 	for(int i = 0; i < final_number_faces; i++)
 	{

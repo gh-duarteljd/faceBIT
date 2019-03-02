@@ -4,6 +4,7 @@
 #define WIDTH_OF_WINDOW        168
 #define HEIGHT_OF_WINDOW       192
 #define NUMBER_OF_FACES        500
+#define NUMBER_OF_COMPONENTS   100
 
 int main()
 {
@@ -40,20 +41,21 @@ int main()
   pca_matrix V;
   V.l = C.l;
   V.c = C.c;
-  V.matrix = malloc(V.l * sizeof(double*));
+  V.matrix = malloc(V.l * sizeof(float*));
   for (int i = 0, k = 0; i < V.l; i++)
   {
-    V.matrix[i] = malloc(V.c * sizeof(double));
+    V.matrix[i] = malloc(V.c * sizeof(float));
     for (int j = 0; j < V.c; j++, k++)
     {
-      V.matrix[i][j] = evec[k];
+      V.matrix[i][j] = (float)evec[k];
     }
   }
 
    pca_matrix P = matrix_multiplication(B, V);
+   P.c = NUMBER_OF_COMPONENTS;
    for (int i = 0; i < P.c; i++)
    {
-     double norm_2 = 0;
+     float norm_2 = 0;
      for (int j = 0; j < P.l; j++)
      {
        norm_2 = norm_2 + P.matrix[j][i] * P.matrix[j][i];
@@ -79,7 +81,7 @@ int main()
   {
     for (int j = 0; j < U.c; j++)
     {
-      fwrite(&U.matrix[i][j], sizeof(double), 1, outptr_U);
+      fwrite(&U.matrix[i][j], sizeof(float), 1, outptr_U);
     }
   }
 
@@ -87,10 +89,28 @@ int main()
   {
     for (int j = 0; j < P.c; j++)
     {
-      fwrite(&P.matrix[i][j], sizeof(double), 1, outptr_P);
+      fwrite(&P.matrix[i][j], sizeof(float), 1, outptr_P);
     }
   }
 
   gsl_vector_free (eval_gsl);
+  
   gsl_matrix_free (evec_gsl);
+
+  pca_matrix_free(X);
+
+  pca_matrix_free(U);
+
+  pca_matrix_free(B);
+
+  pca_matrix_free(C);
+
+  pca_matrix_free(V);
+
+  pca_matrix_free(P);
+
+  fclose(outptr_P);
+
+  fclose(outptr_U);
+
 }
