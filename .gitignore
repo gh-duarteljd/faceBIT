@@ -38,7 +38,7 @@
 *.csv
 
 #eigenfaces
-VISION/pca/files/W
+VISION/pca/files/P
 
 #meanface
 VISION/pca/files/U

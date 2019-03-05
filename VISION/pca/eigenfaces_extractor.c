@@ -71,12 +71,14 @@ int main()
   FILE* ptr_P = fopen("files/P", "wb");
   if (ptr_P == NULL)
   {
+    fclose(ptr_P);
 		printf("could not create file P\n");
     exit(1);
   }
   FILE* ptr_U = fopen("files/U", "wb");
   if (ptr_U == NULL)
   {
+    fclose(ptr_U);
     printf("could not create file U\n");
     exit(1);
   }

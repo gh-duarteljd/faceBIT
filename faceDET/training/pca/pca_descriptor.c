@@ -3,38 +3,51 @@
 #define WIDTH_OF_WINDOW 	 		168
 #define HEIGHT_OF_WINDOW			192
 
-// Frontal faces database parameters.
 #define NUMBER_OF_IMAGES 			1800
 #define NUMBER_OF_FACES 			500
 #define NUMBER_OF_NOFACES			1300
+
 #define NUMBER_OF_COMPONENTS	100
 
-// Fuctions prototypes.
 FILE* 		database_file_creator();
 float** 	database_pca_features_decriptor(pca_matrix P, pca_matrix U);
 void 			fill_database_file(FILE* pca_database_file, float** pca_database);
 
 int main(int argc, char const *argv[])
 {
-	// ensure proper usage
 	if (argc != 1)
 	{
-			printf("Usage: ./database_pca_descriptor \n");
+			printf("usage: ./database_pca_descriptor\n");
 			exit(1);
 	}
 
-	// Open eigenfaces and mean face.
-	FILE* outptr_P = fopen("../../../VISION/pca/eigen/P", "r");
-  if (outptr_P == NULL)
+	FILE* ptr_P = fopen("../../../VISION/pca/files/P", "r");
+	if (ptr_P == NULL)
   {
-		printf("ERRO P \n");
+		fclose(ptr_P);
+		printf("P file not found\n");
     exit(1);
   }
-  FILE* outptr_U = fopen("../../../VISION/pca/eigen/U", "r");
-  if (outptr_U == NULL)
+
+  FILE* ptr_U = fopen("../../../VISION/pca/files/U", "r");
+	if (ptr_U == NULL)
   {
-		printf("ERRO U \n");
+		fclose(ptr_U);
+		printf("U file not found\n");
     exit(1);
+  }
+
+	pca_matrix P;
+	P.l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
+	P.c = NUMBER_OF_COMPONENTS;
+	P.matrix = malloc(P.l * sizeof(float*));
+  for (int i = 0; i < P.l; i++)
+  {
+    P.matrix[i] = malloc(P.c * sizeof(float));
+		for (int j = 0; j < P.c; j++)
+    {
+      fread(&P.matrix[i][j], sizeof(float), 1, ptr_P);
+    }
   }
 
 	pca_matrix U;
@@ -44,44 +57,33 @@ int main(int argc, char const *argv[])
   for (int i = 0; i < U.l; i++)
   {
     U.matrix[i] = malloc(U.c * sizeof(float));
-  }
-	pca_matrix P;
-	P.l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
-	P.c = NUMBER_OF_COMPONENTS;
-	P.matrix = malloc(P.l * sizeof(float*));
-  for (int i = 0; i < P.l; i++)
-  {
-    P.matrix[i] = malloc(P.c * sizeof(float));
-  }
-
-	for (int i = 0; i < U.l; i++)
-  {
-    for (int j = 0; j < U.c; j++)
+		for (int j = 0; j < U.c; j++)
     {
-      fread(&U.matrix[i][j], sizeof(float), 1, outptr_U);
+      fread(&U.matrix[i][j], sizeof(float), 1, ptr_U);
     }
   }
 
-  for (int i = 0; i < P.l; i++)
-  {
-    for (int j = 0; j < P.c; j++)
-    {
-      fread(&P.matrix[i][j], sizeof(float), 1, outptr_P);
-    }
-  }
-
-	// Create empty file to pca database.
 	FILE* pca_database_file = database_file_creator();
 
-	// Create pca database with image database.
 	float** pca_database = database_pca_features_decriptor(P, U);
 
-	// Fill empty file with pca features.
 	fill_database_file(pca_database_file, pca_database);
 
 	pca_matrix_free(P);
 
 	pca_matrix_free(U);
+
+	for (int i = 0; i < NUMBER_OF_IMAGES; i++)
+	{
+		free(pca_database[i]);
+	}
+	free(pca_database);
+
+	fclose(ptr_P);
+
+	fclose(ptr_U);
+
+	fclose(pca_database_file);
 
 	return 0;
 }
@@ -92,7 +94,7 @@ FILE* database_file_creator()
   if (pca_database_file == NULL)
   {
 		fclose(pca_database_file);
-  	fprintf(stderr, "Could not create CSV/pca_descriptor.csv.\n");
+  	printf("could not create file pca_descriptor.csv\n");
     exit(1);
   }
 	else
@@ -174,12 +176,4 @@ void fill_database_file(FILE* pca_database_file, float** pca_database)
 		}
 		fprintf(pca_database_file, "\n");
 	}
-
-	for (int i = 0; i < NUMBER_OF_IMAGES; i++)
-	{
-		free(pca_database[i]);
-	}
-	free(pca_database);
-
-	fclose(pca_database_file);
 }

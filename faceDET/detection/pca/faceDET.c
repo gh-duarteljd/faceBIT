@@ -12,19 +12,21 @@ int main(int argc, char** argv)
 {
 	if (argc != 3)
 	{
-			printf("Usage: ./faceDET input_image output_image \n");
+			printf("usage: ./faceDET input_image output_image \n");
 			exit(1);
 	}
 
 	FILE* ptr_P = fopen("../../../VISION/pca/files/P", "rb");
   if (ptr_P == NULL)
   {
+		fclose(ptr_P);
 		printf("P file not found\n");
     exit(1);
   }
   FILE* ptr_U = fopen("../../../VISION/pca/files/U", "rb");
   if (ptr_U == NULL)
   {
+		fclose(ptr_U);
 		printf("U file not found\n");
     exit(1);
   }
@@ -32,6 +34,7 @@ int main(int argc, char** argv)
 	FILE* ptr_B = fopen("../../training/pca/SVM/B", "rb");
 	if (ptr_B == NULL)
   {
+		fclose(ptr_B);
 		printf("B file not found\n");
   	exit(1);
   }
@@ -39,6 +42,7 @@ int main(int argc, char** argv)
 	FILE* ptr_W = fopen("../../training/pca/SVM/W", "rb");
 	if (ptr_W == NULL)
   {
+		fclose(ptr_W);
 		printf("W file not found\n");
     exit(1);
 	}
