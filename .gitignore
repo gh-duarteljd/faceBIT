@@ -37,5 +37,8 @@
 #Features
 *.csv
 
-#eigen
-VISION/pca/eigen
+#eigenfaces
+VISION/pca/files/W
+
+#meanface
+VISION/pca/files/U

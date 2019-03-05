@@ -6,6 +6,8 @@
 #define NUMBER_OF_FACES        500
 #define NUMBER_OF_COMPONENTS   100
 
+float* matrix_planning(float** m, int height, int width);
+
 int main()
 {
   pca_matrix I;
@@ -66,14 +68,16 @@ int main()
      }
    }
 
-  FILE* outptr_P = fopen("eigen/P", "w");
-  if (outptr_P == NULL)
+  FILE* ptr_P = fopen("files/P", "wb");
+  if (ptr_P == NULL)
   {
+		printf("could not create file P\n");
     exit(1);
   }
-  FILE* outptr_U = fopen("eigen/U", "w");
-  if (outptr_U == NULL)
+  FILE* ptr_U = fopen("files/U", "wb");
+  if (ptr_U == NULL)
   {
+    printf("could not create file U\n");
     exit(1);
   }
 
@@ -81,7 +85,7 @@ int main()
   {
     for (int j = 0; j < U.c; j++)
     {
-      fwrite(&U.matrix[i][j], sizeof(float), 1, outptr_U);
+      fwrite(&U.matrix[i][j], sizeof(float), 1, ptr_U);
     }
   }
 
@@ -89,13 +93,15 @@ int main()
   {
     for (int j = 0; j < P.c; j++)
     {
-      fwrite(&P.matrix[i][j], sizeof(float), 1, outptr_P);
+      fwrite(&P.matrix[i][j], sizeof(float), 1, ptr_P);
     }
   }
 
   gsl_vector_free (eval_gsl);
-  
+
   gsl_matrix_free (evec_gsl);
+
+  pca_matrix_free(I);
 
   pca_matrix_free(X);
 
@@ -109,8 +115,21 @@ int main()
 
   pca_matrix_free(P);
 
-  fclose(outptr_P);
+  fclose(ptr_P);
 
-  fclose(outptr_U);
+  fclose(ptr_U);
+}
 
+float* matrix_planning(float** m, int height, int width)
+{
+  float* v = malloc(width * height * sizeof(float));
+
+  for (int i = 0, k = 0; i < height; i++)
+  {
+    for (int j = 0; j < width; j++, k++)
+    {
+      v[k] = m[i][j];
+    }
+  }
+  return v;
 }

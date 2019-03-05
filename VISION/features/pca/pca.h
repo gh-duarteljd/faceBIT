@@ -4,9 +4,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../../processing/processing.h"
 #include "../../interface/interface.h"
-#include "../../filters/filters.h"
 #include "../../pca/pca.h"
 
 typedef struct

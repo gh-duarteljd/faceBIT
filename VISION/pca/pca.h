@@ -7,8 +7,6 @@
 #include <gsl/gsl_math.h>
 #include <gsl/gsl_eigen.h>
 
-#include "../VISION.h"
-
 typedef struct
 {
     float** matrix;
@@ -28,8 +26,6 @@ pca_matrix transposed_matrix(pca_matrix A);
 pca_matrix covariance_matrix(pca_matrix B);
 
 void eigenvectors_and_eigenvalues(pca_matrix C, gsl_vector *eval, gsl_matrix *evec);
-
-float* matrix_planning(float** m, int height, int width);
 
 void pca_matrix_free(pca_matrix M);
 

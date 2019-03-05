@@ -6,32 +6,51 @@
 
 #define HEIGHT_OF_WINDOW 192
 
-float
-pca_probability(pca_features pca_buffer,
-														float* 			 W,
-														float 			 B);
+int svm_classification(pca_features features, float* W, float B);
 
 int main(int argc, char** argv)
 {
-  // ensure proper usage
 	if (argc != 3)
 	{
 			printf("Usage: ./faceDET input_image output_image \n");
 			exit(1);
 	}
 
-	// Open eigenfaces and mean face.
-	FILE* outptr_P = fopen("../../../VISION/pca/eigen/P", "r");
-  if (outptr_P == NULL)
+	FILE* ptr_P = fopen("../../../VISION/pca/files/P", "rb");
+  if (ptr_P == NULL)
   {
-		printf("ERRO P \n");
+		printf("P file not found\n");
     exit(1);
   }
-  FILE* outptr_U = fopen("../../../VISION/pca/eigen/U", "r");
-  if (outptr_U == NULL)
+  FILE* ptr_U = fopen("../../../VISION/pca/files/U", "rb");
+  if (ptr_U == NULL)
   {
-		printf("ERRO U \n");
+		printf("U file not found\n");
     exit(1);
+  }
+
+	FILE* ptr_B = fopen("../../training/pca/SVM/B", "rb");
+	if (ptr_B == NULL)
+  {
+		printf("B file not found\n");
+  	exit(1);
+  }
+
+	FILE* ptr_W = fopen("../../training/pca/SVM/W", "rb");
+	if (ptr_W == NULL)
+  {
+		printf("W file not found\n");
+    exit(1);
+	}
+
+	pca_matrix P;
+	P.l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
+	P.c = NUMBER_OF_COMPONENTS;
+	P.matrix = malloc(P.l * sizeof(float*));
+  for (int i = 0; i < P.l; i++)
+  {
+    P.matrix[i] = malloc(P.c * sizeof(float));
+		fread(P.matrix[i], sizeof(float), P.c, ptr_P);
   }
 
 	pca_matrix U;
@@ -41,76 +60,63 @@ int main(int argc, char** argv)
   for (int i = 0; i < U.l; i++)
   {
     U.matrix[i] = malloc(U.c * sizeof(float));
-  }
-	pca_matrix P;
-	P.l = WIDTH_OF_WINDOW * HEIGHT_OF_WINDOW;
-	P.c = NUMBER_OF_COMPONENTS;
-	P.matrix = malloc(P.l * sizeof(float*));
-  for (int i = 0; i < P.l; i++)
-  {
-    P.matrix[i] = malloc(P.c * sizeof(float));
-  }
-
-	for (int i = 0; i < U.l; i++)
-  {
-    for (int j = 0; j < U.c; j++)
-    {
-      fread(&U.matrix[i][j], sizeof(float), 1, outptr_U);
-    }
-  }
-
-  for (int i = 0; i < P.l; i++)
-  {
-    for (int j = 0; j < P.c; j++)
-    {
-      fread(&P.matrix[i][j], sizeof(float), 1, outptr_P);
-    }
+		fread(U.matrix[i], sizeof(float), U.c, ptr_U);
   }
 
 	float B;
-	FILE* ptrB = fopen("../../training/pca/SVM/B", "r");
-	if (ptrB == NULL)
-   	{
-		fprintf(stderr, "Unable to open training data.\n");
-      		exit(1);
-   	}
-	fread(&B, sizeof(float), 1, ptrB);
+	fread(&B, sizeof(float), 1, ptr_B);
 
-	FILE* ptrW = fopen("../../training/pca/SVM/W", "r");
-	if (ptrW == NULL)
-   	{
-		fprintf(stderr, "Unable to open training data.\n");
-      		exit(1);
-   	}
 	float* W = malloc(NUMBER_OF_COMPONENTS * sizeof(float));
-	fread(W, sizeof(float), NUMBER_OF_COMPONENTS, ptrW);
+	fread(W, sizeof(float), NUMBER_OF_COMPONENTS, ptr_W);
 
 	image input_image = load_image(argv[1]);
 
-	pca_features pca_buffer = pca(input_image, P.matrix, U.matrix, WIDTH_OF_WINDOW, HEIGHT_OF_WINDOW, NUMBER_OF_COMPONENTS);
+	pca_features features = pca(input_image, P.matrix, U.matrix, WIDTH_OF_WINDOW, HEIGHT_OF_WINDOW, NUMBER_OF_COMPONENTS);
 
-	float prob = pca_probability(pca_buffer, W, B);
+	int class = svm_classification(features, W, B);
 
-	printf("%f\n", prob);
+	if (class == 1)
+	{
+		printf("FACE\n");
+	}
+	else
+	{
+		printf("NON FACE\n");
+	}
+
+	for (int i = 0; i < P.l; i++)
+  {
+		free(P.matrix[i]);
+		free(U.matrix[i]);
+	}
+	free(P.matrix);
+	free(U.matrix);
 
 	free(W);
-	fclose(ptrW);
-	fclose(ptrB);
+
+	fclose(ptr_W);
+	fclose(ptr_B);
+	fclose(ptr_P);
+	fclose(ptr_U);
 
 	free_image(input_image);
+
+	free(features.pca_vector);
 }
 
-float
-pca_probability(pca_features pca_buffer,
-														float* 			 W,
-														float 			 B)
+int svm_classification(pca_features features, float* W, float B)
 {
 	float F = 0;
 	for (int i = 0; i < NUMBER_OF_COMPONENTS; i++)
 	{
-		F = F + W[i] * pca_buffer.pca_vector[i];
-		printf("%f, %f\n", W[i], pca_buffer.pca_vector[i]);
+		F = F + W[i] * features.pca_vector[i];
 	}
-
-	return F + B;
+	if ((F + B) > 0)
+	{
+		return 1;
+	}
+	else
+	{
+		return 0;
+	}
 }
