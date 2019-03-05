@@ -6,6 +6,8 @@
 
 #define HEIGHT_OF_WINDOW 192
 
+#define NUMBER_OF_FACES 250
+
 int svm_classification(pca_features features, float* W, float B);
 
 int main(int argc, char** argv)
@@ -73,20 +75,36 @@ int main(int argc, char** argv)
 	float* W = malloc(NUMBER_OF_COMPONENTS * sizeof(float));
 	fread(W, sizeof(float), NUMBER_OF_COMPONENTS, ptr_W);
 
-	image input_image = load_image(argv[1]);
+	//////////
 
-	pca_features features = pca(input_image, P.matrix, U.matrix, WIDTH_OF_WINDOW, HEIGHT_OF_WINDOW, NUMBER_OF_COMPONENTS);
+	char path[100];
 
-	int class = svm_classification(features, W, B);
-
-	if (class == 1)
+	for (int i = 0; i < NUMBER_OF_FACES; i++)
 	{
-		printf("FACE\n");
+		char folder[] = "../../../databases/faces/test";
+		sprintf(path, "%s/%d.pgm", folder, i + 1);
+
+		image current_image = load_image(path);
+
+		pca_features features = pca(current_image, P.matrix, U.matrix, WIDTH_OF_WINDOW, HEIGHT_OF_WINDOW, NUMBER_OF_COMPONENTS);
+
+		int class = svm_classification(features, W, B);
+
+		if (class == 1)
+		{
+			printf("%d:\tFACE\n", i + 1);
+		}
+		else
+		{
+			printf("%d:\tNON FACE\n", i + 1);
+		}
+
+		free(features.pca_vector);
+
+		free_image(current_image);
 	}
-	else
-	{
-		printf("NON FACE\n");
-	}
+
+	//////////
 
 	for (int i = 0; i < P.l; i++)
   {
@@ -102,10 +120,6 @@ int main(int argc, char** argv)
 	fclose(ptr_B);
 	fclose(ptr_P);
 	fclose(ptr_U);
-
-	free_image(input_image);
-
-	free(features.pca_vector);
 }
 
 int svm_classification(pca_features features, float* W, float B)
