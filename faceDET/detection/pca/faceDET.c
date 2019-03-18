@@ -1,20 +1,20 @@
 #include "../../../VISION/VISION.h"
 
-#define NUMBER_OF_COMPONENTS	100
+#define NUMBER_OF_COMPONENTS	30
 
 #define WIDTH_OF_WINDOW  168
 
 #define HEIGHT_OF_WINDOW 192
 
-#define NUMBER_OF_FACES 250
+#define NUMBER_OF_FACES 2402
 
 int svm_classification(pca_features features, float* W, float B);
 
 int main(int argc, char** argv)
 {
-	if (argc != 3)
+	if (argc != 1)
 	{
-			printf("usage: ./faceDET input_image output_image \n");
+			printf("usage: ./faceDET\n");
 			exit(1);
 	}
 
@@ -81,27 +81,32 @@ int main(int argc, char** argv)
 
 	for (int i = 0; i < NUMBER_OF_FACES; i++)
 	{
-		char folder[] = "../../../databases/faces/test";
-		sprintf(path, "%s/%d.pgm", folder, i + 1);
+		sprintf(path, "../../../metrics/faces/%d.pgm", i + 1);
 
 		image current_image = load_image(path);
+
+		//image current_image = histogram_equalizer(input_image);
 
 		pca_features features = pca(current_image, P.matrix, U.matrix, WIDTH_OF_WINDOW, HEIGHT_OF_WINDOW, NUMBER_OF_COMPONENTS);
 
 		int class = svm_classification(features, W, B);
 
-		if (class == 1)
+		if (class == 0)
 		{
-			printf("%d:\tFACE\n", i + 1);
+			sprintf(path, "../../../metrics/investigate_nofaces/%d.pgm", i + 1);
+			save_image(current_image, path);
 		}
 		else
 		{
-			printf("%d:\tNON FACE\n", i + 1);
+			sprintf(path, "../../../metrics/investigate_faces/%d.pgm", i + 1);
+			save_image(current_image, path);
 		}
 
 		free(features.pca_vector);
 
 		free_image(current_image);
+
+		//free_image(input_image);
 	}
 
 	//////////

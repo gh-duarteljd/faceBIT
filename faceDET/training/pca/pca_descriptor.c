@@ -3,11 +3,11 @@
 #define WIDTH_OF_WINDOW 	 		168
 #define HEIGHT_OF_WINDOW			192
 
-#define NUMBER_OF_IMAGES 			1800
-#define NUMBER_OF_FACES 			500
+#define NUMBER_OF_IMAGES 			2421
+#define NUMBER_OF_FACES 			1121
 #define NUMBER_OF_NOFACES			1300
 
-#define NUMBER_OF_COMPONENTS	100
+#define NUMBER_OF_COMPONENTS	30
 
 FILE* 		database_file_creator();
 float** 	database_pca_features_decriptor(pca_matrix P, pca_matrix U);
@@ -114,13 +114,11 @@ float** database_pca_features_decriptor(pca_matrix P, pca_matrix U)
 
 		if (i < NUMBER_OF_FACES)
 		{
-			char folder[] = "../../../databases/faces/train";
-			sprintf(path, "%s/%d.pgm", folder, i + 1);
+			sprintf(path, "../../../databases/svm-faces/%d.pgm", i + 1);
 		}
 		else
 		{
-			char folder[] = "../../../databases/nofaces";
-			sprintf(path, "%s/%d.pgm", folder, (i - NUMBER_OF_FACES + 1));
+			sprintf(path, "../../../databases/non-faces/%d.pgm", (i - NUMBER_OF_FACES + 1));
 		}
 
 		image current_image = load_image(path);

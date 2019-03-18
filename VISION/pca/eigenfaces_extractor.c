@@ -3,8 +3,8 @@
 
 #define WIDTH_OF_WINDOW        168
 #define HEIGHT_OF_WINDOW       192
-#define NUMBER_OF_FACES        500
-#define NUMBER_OF_COMPONENTS   100
+#define NUMBER_OF_FACES        600
+#define NUMBER_OF_COMPONENTS   30
 
 float* matrix_planning(float** m, int height, int width);
 
@@ -18,7 +18,7 @@ int main()
   for (int i = 0; i < NUMBER_OF_FACES; i++)
   {
     char path[100];
-    sprintf(path, "../../databases/faces/train/%d.pgm", i + 1);
+    sprintf(path, "../../databases/pca-faces/%d.pgm", i + 1);
     image current_image = load_image(path);
     I.matrix[i] = matrix_planning(current_image.pixels_map, HEIGHT_OF_WINDOW, WIDTH_OF_WINDOW);
     free_image(current_image);
@@ -27,6 +27,24 @@ int main()
   pca_matrix X = transposed_matrix(I);
 
   pca_matrix U = empirical_mean(X);
+
+  /*salvar como imagem face media*/
+  /*
+  image mean_image;
+  mean_image.width = WIDTH_OF_WINDOW;
+  mean_image.height = HEIGHT_OF_WINDOW;
+  mean_image.pixels_map = malloc(mean_image.height * sizeof(float*));
+  for (int i = 0, k = 0; i < mean_image.height; i++)
+  {
+    mean_image.pixels_map[i] = malloc(mean_image.width * sizeof(float));
+    for (int j = 0; j < mean_image.width; j++, k++)
+    {
+      mean_image.pixels_map[i][j] = U.matrix[k][0];
+    }
+  }
+  save_image(mean_image, "mean.pgm");
+  */
+  /*salvar como imagem face media -F- */
 
   pca_matrix B = mean_deviations(X, U);
 
@@ -39,6 +57,15 @@ int main()
 
   double* evec = gsl_matrix_ptr(evec_gsl, 0, 0);
   double* eval = gsl_vector_ptr(eval_gsl, 0);
+
+  /*Imprimir na tela os valores dos autovetores*/
+  /*
+  for (int i = 0; i < NUMBER_OF_COMPONENTS; i++)
+  {
+    printf("%.3f\n", (float)eval[i]);
+  }
+  */
+  /*Imprimir na tela os valores dos autovetores -F- */
 
   pca_matrix V;
   V.l = C.l;
@@ -98,6 +125,8 @@ int main()
       fwrite(&P.matrix[i][j], sizeof(float), 1, ptr_P);
     }
   }
+
+  printf("%d, %d \n", P.l, P.c);
 
   gsl_vector_free (eval_gsl);
 
